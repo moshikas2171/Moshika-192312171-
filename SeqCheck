@@ -1,0 +1,28 @@
+module SeqCheck(
+    input clk,
+    input rst,
+    input sig_in,
+    output reg flag
+);
+
+reg prev;
+reg [4:0] window;
+
+always @(posedge clk or posedge rst) begin
+    if(rst) begin
+        prev <= 0;
+        window <= 0;
+        flag <= 0;
+    end
+    else begin
+        window <= {window[3:0], (sig_in & ~prev)};
+        prev <= sig_in;
+
+        if(window[0]+window[1]+window[2]+window[3]+window[4] >= 3)
+            flag <= 1;
+        else
+            flag <= 0;
+    end
+end
+
+endmodule
